@@ -1,4 +1,4 @@
-{% set version="0.6.0" %}
+{% set version="0.6.1" %}
 # When updating, also need to update model reference in post-link.sh
 
 package:
@@ -14,9 +14,12 @@ package:
 # - Ships with pre-built model. Longer term will need way to fetch models on demand.
 
 source:
-  fn: deepvariant-{{ version }}.zip
-  url: https://github.com/google/deepvariant/releases/download/v{{ version }}/deepvariant.zip
-  md5: e7615109b4d1afe8527605eeaf3f927e
+  fn: deepvariant-{{ version }}.tar.gz
+  url: https://github.com/google/deepvariant/archive/v0.6.1.tar.gz
+  md5: ea80e7bfe91ac4e520220aef93a6f197
+  #fn: deepvariant-{{ version }}.zip
+  #url: https://github.com/google/deepvariant/releases/download/v{{ version }}/deepvariant.zip
+  #md5: e7615109b4d1afe8527605eeaf3f927e
 
 build:
   number: 0
@@ -30,8 +33,13 @@ requirements:
     - zlib {{CONDA_ZLIB}}*
     - curl
     # Needed for non-binary build
-    # - google-cloud-sdk
-    # - bazel
+    - numpy 1.14.*
+    - tensorflow
+    - google-cloud-sdk
+    - openssl
+    # Need bazel 0.11 due to compile problems
+    # https://github.com/tensorflow/tensorflow/issues/18450
+    - bazel 0.11.*
   run:
     - openjdk >=8,<9
     - python
@@ -39,14 +47,13 @@ requirements:
     - zlib {{ CONDA_ZLIB }}*
     - boost {{ CONDA_BOOST }}*
     - htslib {{ CONDA_HTSLIB }}*
-    - numpy
+    - numpy 1.14.*
     - curl
     - tensorflow
     - contextlib2
     - enum34
     - intervaltree
     - mock
-    - numpy 1.14.*
     - requests
     - scipy
     - oauth2client
@@ -57,9 +64,9 @@ requirements:
 test:
   commands:
     # Pre-built binaries need GLIBC 2.16 and 2.23 (htslib) so fail
-    # - dv_make_examples.py -h
-    # - dv_call_variants.py -h
-    # - dv_postprocess_variants.py -h
+    - dv_make_examples.py -h
+    - dv_call_variants.py -h
+    - dv_postprocess_variants.py -h
 
 about:
   home: https://github.com/google/deepvariant
